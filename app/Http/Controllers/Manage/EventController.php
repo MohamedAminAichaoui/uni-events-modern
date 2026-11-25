@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Models\Club;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 
 class EventController extends Controller
 {
@@ -37,6 +39,13 @@ class EventController extends Controller
         $data = $this->validated($request);
         $data['club_id'] = auth()->user()->isAdmin() ? ($request->input('club_id') ?: null) : auth()->user()->club_id;
         $data['created_by'] = auth()->id();
+        if ($request->hasFile('poster')) {
+            $posterPath = $request->file('poster')->store('event-posters', 'public');
+            if ($posterPath === false) {
+                throw new RuntimeException('The event poster could not be stored.');
+            }
+            $data['poster_path'] = $posterPath;
+        }
 
         Event::create($data);
 
@@ -71,7 +80,21 @@ class EventController extends Controller
             unset($data['club_id']); // a club manager cannot move an event to another club
         }
 
+        $oldPosterPath = $event->poster_path;
+        if ($request->hasFile('poster')) {
+            $posterPath = $request->file('poster')->store('event-posters', 'public');
+            if ($posterPath === false) {
+                throw new RuntimeException('The event poster could not be stored.');
+            }
+            $data['poster_path'] = $posterPath;
+        }
+
         $event->update($data);
+        if (isset($data['poster_path']) && $oldPosterPath && $oldPosterPath !== $data['poster_path']) {
+            if (! Storage::disk('public')->delete($oldPosterPath)) {
+                throw new RuntimeException('The previous event poster could not be deleted.');
+            }
+        }
 
         return redirect()->route('manage.events.index')->with('success', 'Event updated.');
     }
@@ -80,14 +103,18 @@ class EventController extends Controller
     {
         $this->authorizeEvent($event);
 
+        $posterPath = $event->poster_path;
         $event->delete();
+        if ($posterPath && ! Storage::disk('public')->delete($posterPath)) {
+            throw new RuntimeException('The event poster could not be deleted.');
+        }
 
         return redirect()->route('manage.events.index')->with('success', 'Event deleted.');
     }
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'start_date' => ['required', 'date'],
@@ -96,7 +123,11 @@ class EventController extends Controller
             'capacity' => ['required', 'integer', 'min:1'],
             'category_id' => ['required', 'exists:categories,id'],
             'club_id' => ['nullable', 'exists:clubs,id'],
+            'poster' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
+        unset($data['poster']);
+
+        return $data;
     }
 
     private function formData(Event $event): array

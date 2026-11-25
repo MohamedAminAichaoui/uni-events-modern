@@ -1,6 +1,9 @@
 @php($muted = $muted ?? false)
 <a href="{{ route('events.show', $event) }}" data-event data-title="{{ strtolower($event->title.' '.$event->organizerName().' '.$event->location) }}" data-cat="{{ $event->category->id }}"
    class="card reveal group flex flex-col p-5 {{ $muted ? 'opacity-60' : '' }}">
+    @if($event->poster_path)
+        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($event->poster_path) }}" alt="Poster for {{ $event->title }}" class="mb-4 h-40 w-full rounded-xl bg-slate-100 object-cover">
+    @endif
     <div class="flex items-start gap-4">
         <div class="shrink-0 w-16 h-[72px] rounded-2xl bg-gradient-to-br from-navy to-indigo-500 text-center flex flex-col justify-center shadow-lg shadow-navy/20 group-hover:scale-105 transition">
             <span class="text-xs font-bold uppercase tracking-wider text-gold-400">{{ $event->start_date->format('M') }}</span>

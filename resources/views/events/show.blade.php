@@ -27,6 +27,9 @@
     <div class="lg:col-span-2">
         <h2 class="font-extrabold text-2xl font-semibold text-navy">About this event</h2>
         <p class="mt-4 text-lg leading-relaxed whitespace-pre-line max-w-prose">{{ $event->description }}</p>
+        @if($event->poster_path)
+            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($event->poster_path) }}" alt="Poster for {{ $event->title }}" class="mt-8 max-h-[32rem] w-full rounded-xl bg-slate-100 object-contain">
+        @endif
     </div>
 
     <aside class="card bg-white p-6 shadow-sm self-start">

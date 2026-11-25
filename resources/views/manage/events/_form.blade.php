@@ -9,6 +9,15 @@
         <textarea id="description" name="description" rows="5" required class="w-full border rounded px-3 py-2">{{ old('description', $event->description) }}</textarea>
     </div>
 
+    <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1" for="poster">Event poster (JPG, PNG or WebP; max 5 MB)</label>
+        <input id="poster" type="file" name="poster" accept="image/jpeg,image/png,image/webp" class="w-full border rounded px-3 py-2">
+        @if($event->poster_path)
+            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($event->poster_path) }}" alt="Current poster for {{ $event->title }}" class="mt-3 max-h-56 rounded object-contain">
+            <p class="mt-1 text-sm text-slate-500">Choose a new image only if you want to replace the current poster.</p>
+        @endif
+    </div>
+
     <div>
         <label class="block text-sm font-medium mb-1" for="start_date">Starts</label>
         <input id="start_date" type="datetime-local" name="start_date" value="{{ old('start_date', $event->start_date?->format('Y-m-d\TH:i')) }}" required class="w-full border rounded px-3 py-2">

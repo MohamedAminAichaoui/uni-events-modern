@@ -6,7 +6,11 @@
     <div class="max-w-6xl mx-auto px-4 py-10">
         <a href="{{ route('clubs.index') }}" class="text-sm text-slate-300 underline hover:text-white">Back to all clubs</a>
         <div class="mt-6 flex flex-wrap items-center gap-6">
-            <div class="shrink-0 w-24 h-24 bg-white text-navy border-b-4 border-gold-500 flex items-center justify-center px-1 text-center font-extrabold text-sm font-semibold">{{ $club->acronym }}</div>
+            @if($club->logo_path)
+                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($club->logo_path) }}" alt="Logo for {{ $club->name }}" class="shrink-0 w-24 h-24 rounded-xl bg-white object-contain">
+            @else
+                <div class="shrink-0 w-24 h-24 bg-white text-navy border-b-4 border-gold-500 flex items-center justify-center px-1 text-center font-extrabold text-sm font-semibold">{{ $club->acronym }}</div>
+            @endif
             <div class="flex-1 min-w-[16rem]">
                 <h1 class="font-extrabold text-4xl sm:text-5xl font-extrabold leading-tight">{{ $club->name }}</h1>
                 <p class="mt-2 text-slate-200">{{ $club->members_count }} members</p>

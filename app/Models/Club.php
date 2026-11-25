@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Club extends Model
 {
-    protected $fillable = ['name', 'acronym', 'description', 'email'];
+    protected $fillable = ['name', 'acronym', 'description', 'email', 'logo_path'];
 
     public function events(): HasMany
     {

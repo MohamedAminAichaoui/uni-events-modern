@@ -14,7 +14,11 @@
 <div class="grid gap-5 md:grid-cols-2">
     @foreach($clubs as $club)
         <a href="{{ route('clubs.show', $club) }}" class="card reveal group flex gap-5 p-6">
-            <div class="shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-navy to-indigo-500 flex items-center justify-center px-1 text-center text-sm font-extrabold text-gold-400 shadow-lg shadow-navy/20 group-hover:rotate-3 group-hover:scale-105 transition">{{ $club->acronym }}</div>
+            @if($club->logo_path)
+                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($club->logo_path) }}" alt="Logo for {{ $club->name }}" class="shrink-0 w-20 h-20 rounded-2xl object-contain bg-white shadow-lg group-hover:scale-105 transition">
+            @else
+                <div class="shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-navy to-indigo-500 flex items-center justify-center px-1 text-center text-sm font-extrabold text-gold-400 shadow-lg shadow-navy/20 group-hover:rotate-3 group-hover:scale-105 transition">{{ $club->acronym }}</div>
+            @endif
             <div class="min-w-0">
                 <h2 class="text-xl font-bold text-navy group-hover:text-indigo-500 transition">{{ $club->name }}</h2>
                 <p class="mt-1 text-slate-600 text-sm">{{ \Illuminate\Support\Str::limit($club->description, 110) }}</p>

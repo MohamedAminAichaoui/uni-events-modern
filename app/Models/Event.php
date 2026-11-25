@@ -12,7 +12,7 @@ class Event extends Model
 {
     protected $fillable = [
         'title', 'description', 'start_date', 'end_date', 'location',
-        'capacity', 'category_id', 'club_id', 'created_by',
+        'capacity', 'category_id', 'club_id', 'created_by', 'poster_path',
     ];
 
     protected function casts(): array
