@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClubController;
 use App\Http\Controllers\ClubMembershipController;
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'role:admin,club_manager'])->prefix('manage')->name('
 
 // ---- Admin only ----
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('analytics/events', [DashboardController::class, 'events'])->name('analytics.events');
+    Route::get('analytics/clubs', [DashboardController::class, 'clubs'])->name('analytics.clubs');
     Route::resource('clubs', Admin\ClubController::class)->except('show');
     Route::resource('categories', Admin\CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('users', [Admin\UserController::class, 'index'])->name('users.index');

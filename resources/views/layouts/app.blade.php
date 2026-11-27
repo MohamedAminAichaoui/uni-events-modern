@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'UniEvents')</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -111,6 +112,11 @@
         <div class="bg-navy-900 text-white text-sm">
             <div class="max-w-6xl mx-auto px-4 py-2 flex flex-wrap gap-2">
                 @php($adm = 'px-3 py-1 rounded-full bg-white/10 hover:bg-gold-500 hover:text-navy transition')
+                @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="{{ $adm }}">Overview</a>
+                    <a href="{{ route('admin.analytics.events') }}" class="{{ $adm }}">Events dashboard</a>
+                    <a href="{{ route('admin.analytics.clubs') }}" class="{{ $adm }}">Clubs dashboard</a>
+                @endif
                 <a href="{{ route('manage.events.index') }}" class="{{ $adm }}">Manage events</a>
                 @if(auth()->user()->isAdmin())
                     <a href="{{ route('admin.clubs.index') }}" class="{{ $adm }}">Manage clubs</a>
